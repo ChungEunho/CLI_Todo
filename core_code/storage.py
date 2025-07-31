@@ -1,11 +1,14 @@
 # stoarge.py는 실제 json 입출력 담당
 
 import json
+import threading
 from pathlib import Path
 from .models import TodoItem
 from .utils import sort_key
 
+
 STORAGE_PATH = Path("todo.json")
+lock = threading.Lock()
 
 # JSON 파일에서 TodoItem 리스트 불러오기
 def load_items() -> list[TodoItem]:
@@ -27,8 +30,12 @@ def add_item(item: TodoItem):
     items.append(item)
     save_items(items)
     
+
 # 인덱스에 해당하는 항목 삭제
 def delete_item(index: int):
+    '''
+    Not used for now, but implemented for potential future use
+    '''
     items = load_items()
     if 0 <= index < len(items):
         del items[index]
@@ -38,10 +45,16 @@ def delete_item(index: int):
     
 # 전체 항목 삭제
 def clear_items():
+    '''
+    Not used for now, but implemented for potential future use
+    '''
     save_items([])
 
 # 인덱스의 항목 수정
 def update_item(index: int, date=None, time=None):
+    '''
+    Not used for now, but implemented for potential future use
+    '''
     items = load_items()
     if 0 <= index < len(items):
         if date is not None:
@@ -51,5 +64,31 @@ def update_item(index: int, date=None, time=None):
         save_items(items)
     else:
         raise IndexError("Invalid index")
+
+def mdel_threaded(indexes: list[int]):
+    '''
+    Not used for now, but implemented for potential future use
+    '''
+    items = load_items()
+    deleted_titles = [None]
     
+    def mark_deleted(i):
+        if 0 <= i < len(items):
+            with lock:
+                deleted_titles[i] = items[i].title
+                items[i] = None
     
+    threads = []
+    for idx in indexes:
+        t = threading.Thread(target=mark_deleted, args=(idx,))
+        t.start()
+        threads.append(t)
+    for t in threads:
+        t.join()
+        
+    items = [item for item in items if item is not None]
+    save_items(items)
+    
+    for title in deleted_titles:
+        if title:
+            print(f"Deleted: {title}")
