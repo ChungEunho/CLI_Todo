@@ -109,9 +109,14 @@ flag type
 코드 설명
 
 _ _main_ _.py : python -m CLI dev로 실행할 때 진입점
-cli.py : CLI 명령어 파싱
-models.py : TodoItem 데이터 클래스 정의
-utils.py : 날짜/시간 파싱 및 헬퍼 함수들
-storage.py : 실제로 JSON이나 SQLite에 저장/불러오기
+
+cli.py : CLI 명령어 파싱 
+
+models.py : TodoItem 데이터 클래스 정의 
+
+utils.py : 날짜/시간 파싱 및 헬퍼 함수들 
+
+storage.py : 실제로 JSON이나 SQLite에 저장/불러오기 
+
 CLI 실행 후 명령 처리 로직 : args.command 값에 따라 동작 수행
 

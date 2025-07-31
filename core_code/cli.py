@@ -1,9 +1,15 @@
 # cli.py는 command 파싱 담당
 
 import argparse
+import time
 from .utils import parse_date, parse_time, format_date, format_time, sort_key
 from .models import TodoItem
 from .storage import add_item, load_items, save_items
+from rich.console import Console
+from rich.table import Table
+from rich.progress import track
+import questionary
+
 
 def main():
     parser = argparse.ArgumentParser(prog = "todo", description="ToDo List Managing Tool")
@@ -53,18 +59,27 @@ def main():
     # 2. show
     elif args.command == "show":
         items = load_items()
-        if not items:
-            print(f"\n| Index |                   Title                  |     Date     |    Time   |")
-            print(  f"|-------|------------------------------------------|--------------|-----------|")
-            print("\n")
-        else:
-            print(f"\n| Index |                   Title                  |     Date     |    Time   |")
-            print(f"|-------|------------------------------------------|--------------|-----------|")
-            for idx, item in enumerate(sorted(items, key=sort_key)):
-                print(f"|{idx:^7}|{item.title:^42}|{format_date(item.date_att):^14}|{format_time(item.time_att):^11}|")
-            print("\n")
+        console = Console()
+        print("\n")
+        table = Table(title="ToDo List", show_lines=True)
+        table.add_column("Index", style="cyan", justify="center")
+        table.add_column("Title", style="bold white", justify="center")
+        table.add_column("Date", style="green", justify="center")
+        table.add_column("Time", style="magenta", justify="center")
 
-    
+        if not items:
+            console.print("[bold yellow]No todo items found.[/bold yellow]")
+        else:
+            for idx, item in enumerate(sorted(items, key=sort_key)):
+                table.add_row(
+                    str(idx),
+                    item.title,
+                    format_date(item.date_att),
+                    format_time(item.time_att)
+                )
+            console.print(table)
+        print("\n")
+
     # 3. delete
     elif args.command == "delete":
         try:
@@ -73,6 +88,9 @@ def main():
             if index < 0 or index >= len(items):
                 print("Invalid index.")
             else:
+                print(f"Deleting item at index {index}...")
+                for _ in track(range(1), description="Deleting..."):
+                    time.sleep(1)  # 실제 삭제라면 딜레이 없이도 괜찮음
                 removed = items.pop(index)
                 save_items(items)
                 print(f"Deleted: {removed.title}")
@@ -81,15 +99,16 @@ def main():
     
     # 4. clear
     elif args.command == "clear":
-        confirm = input(" If you press Y or y, you cannot undo it. Are you sure you want to clear the whole ToDo List? [y/N]: ")
-        if confirm.lower() == "y":
+        confirm = questionary.confirm("Are you sure you want to clear the whole ToDo List?").ask()
+        if confirm:
             try:
                 save_items([])
-                print(" All todo items cleared.")
+                print("All todo items cleared.")
             except Exception as e:
                 print(f"Error while clearing: {e}")
         else:
-            print("Cancelled. Nothing was cleared.")    
+            print("Cancelled. Nothing was cleared.")
+            
     # 5. fix
     elif args.command == "fix":
         try:
@@ -102,18 +121,21 @@ def main():
                 if args.date:
                     item.date_att= parse_date(args.date)
                 if args.time:
-                    item.time_att = parse_time(args.to)
+                    item.time_att = parse_time(args.time)
                 save_items(items)
                 print("Updated item: {item.title}")
         except Exception as e:
-            print(f"Error while fixing {e}")
+            print(f"Error while fixing: {e}")
+
             
     # 6. mdel
     elif args.command == "mdel":
         try:
             items = load_items()
             indexes = sorted(set(args.indexes), reverse=True)
-            for idx in indexes:
+            print("Deleting multiple items...")
+            for idx in track(indexes, description="Deleting..."):
+                time.sleep(0.2)  # 시각적 효과를 위한 딜레이 (생략 가능)
                 if 0 <= idx < len(items):
                     removed = items.pop(idx)
                     print(f"Deleted: {removed.title}")
