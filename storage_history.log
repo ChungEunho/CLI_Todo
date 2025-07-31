@@ -1,0 +1,6 @@
+[DEBUG] 2025-07-31 15:17:52,946 : file(storage.py) function(load_items) lineno(32) 
+ 	 Parsed 5 items from storage
+[DEBUG] 2025-07-31 15:17:52,946 : file(storage.py) function(save_items) lineno(40) 
+ 	 Stored 6 items in storage
+[DEBUG] 2025-07-31 15:18:34,527 : file(storage.py) function(load_items) lineno(32) 
+ 	 Parsed 6 items from storage

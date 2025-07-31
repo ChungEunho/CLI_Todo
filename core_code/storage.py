@@ -1,11 +1,26 @@
 # stoarge.py는 실제 json 입출력 담당
 
 import json
+import logging
 from pathlib import Path
 from .models import TodoItem
 from .utils import sort_key
 
 STORAGE_PATH = Path("todo.json")
+DEBUG_FORMAT = "[%(levelname)s] %(asctime)s : file(%(filename)s) function(%(funcName)s) lineno(%(lineno)s) \n \t %(message)s"
+
+
+def make_debug_logger(name = None):
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(DEBUG_FORMAT)
+    file_handler = logging.FileHandler(filename = "storage_history.log")
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    return logger
+    
+debug_logger = make_debug_logger("func_call_history")
 
 # JSON 파일에서 TodoItem 리스트 불러오기
 def load_items() -> list[TodoItem]:
@@ -14,12 +29,15 @@ def load_items() -> list[TodoItem]:
     with open(STORAGE_PATH, "r") as f:
         data = json.load(f)
     items = [TodoItem.from_dict(d) for d in data]
+    debug_logger.debug(f"Parsed {len(items)} items from storage")
     return(sorted(items, key=sort_key))
+
 
 # TodoItem 리스트 전체를 JSON 파일로 저장
 def save_items(items: list[TodoItem]):
     with open(STORAGE_PATH, "w") as f:
         json.dump([item.to_dict() for item in items], f, indent = 2)
+    debug_logger.debug(f"Stored {len(items)} items in storage")
 
 # 새 항목 추가 (기존 리스트에 append 후 저장)
 def add_item(item: TodoItem):
