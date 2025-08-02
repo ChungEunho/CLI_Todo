@@ -126,7 +126,7 @@ def main():
                 if args.time:
                     item.time_att = parse_time(args.time)
                 save_items(items)
-                print("Updated item: {item.title}")
+                print(f"Updated item: {item.title}")
         except Exception as e:
             print(f"Error while fixing: {e}")
 
