@@ -12,8 +12,11 @@ import questionary
 
 
 def main():
-    parser = argparse.ArgumentParser(prog = "todo", description="ToDo List Managing Tool")
-    subparser = parser.add_subparsers(dest="command", required=True)
+    parser = argparse.ArgumentParser(description="Todo CLI Tool")    
+    
+    top_level_subparser = parser.add_subparsers(dest="tool", required=True)
+    todo_parser = top_level_subparser.add_parser("todo", help = "ToDo List Managing Tool")
+    subparser = todo_parser.add_subparsers(dest="command", required=True)
     
     # add 명령어
     add_parser = subparser.add_parser("add", help = "Add a new todo item")

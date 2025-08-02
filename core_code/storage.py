@@ -8,7 +8,7 @@ from .models import TodoItem
 from .utils import sort_key
 
 
-STORAGE_PATH = Path("todo.json")
+STORAGE_PATH = Path(__file__).parent / "todo.json"
 DEBUG_FORMAT = "[%(levelname)s] %(asctime)s : file(%(filename)s) function(%(funcName)s) lineno(%(lineno)s) \n \t %(message)s"
 lock = threading.Lock()
 
