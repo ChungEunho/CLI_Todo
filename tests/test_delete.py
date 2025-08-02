@@ -5,12 +5,12 @@ def test_delete_command():
     project_root = Path(__file__).resolve().parent.parent
 
     subprocess.run(
-        ["python", "-m", "core_code", "add", "Delete_Test_Item"],
+        ["python", "-m", "core_code", "todo" ,"add", "Delete_Test_Item"],
         cwd=str(project_root)
     )
 
     result = subprocess.run(
-        ["python", "-m", "core_code", "delete", "0"],
+        ["python", "-m", "core_code", "todo" ,"delete", "0"],
         capture_output=True,
         text=True,
         cwd=str(project_root)
