@@ -34,7 +34,7 @@ def main():
     
     # clear 명령어
     clear_parser = subparser.add_parser("clear", help = "Clear all todo items")
-    clear_parser
+    clear_parser.add_argument("--force", action="store_true", help="Skip confirmation")
     
     # fix 명령어
     fix_parser = subparser.add_parser("fix", help = "Fix a todo item's date/time")

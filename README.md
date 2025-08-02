@@ -106,17 +106,14 @@ flag type
     
 
 
-코드 설명
+## 🐳 Docker로 실행하기
 
-_ _main_ _.py : python -m CLI dev로 실행할 때 진입점
+이 CLI 도구는 데이터를 컨테이너 내부에 저장하므로,
+할 일(todo) 목록을 유지하려면 **볼륨 마운트**를 사용해야 합니다.
 
-cli.py : CLI 명령어 파싱 
+### ✅ 할 일 추가 예시
 
-models.py : TodoItem 데이터 클래스 정의 
+```bash
+docker run -v $(pwd)/core_code:/app/core_code eunho0616/cli-todo todo add "dinner"
 
-utils.py : 날짜/시간 파싱 및 헬퍼 함수들 
-
-storage.py : 실제로 JSON이나 SQLite에 저장/불러오기 
-
-CLI 실행 후 명령 처리 로직 : args.command 값에 따라 동작 수행
-
+docker run -v $(pwd)/core_code:/app/core_code eunho0616/cli-todo todo show
