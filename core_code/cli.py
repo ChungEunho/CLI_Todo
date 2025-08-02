@@ -8,8 +8,6 @@ from .storage import add_item, load_items, save_items
 from rich.console import Console
 from rich.table import Table
 from rich.progress import track
-import questionary
-
 
 def main():
     parser = argparse.ArgumentParser(description="Todo CLI Tool")    
@@ -102,8 +100,8 @@ def main():
     
     # 4. clear
     elif args.command == "clear":
-        confirm = questionary.confirm("Are you sure you want to clear the whole ToDo List?").ask()
-        if confirm:
+        confirm = input("Are you sure you want to clear the whole ToDo List? (y/n): ").strip().lower()
+        if confirm == "y":
             try:
                 save_items([])
                 print("All todo items cleared.")
