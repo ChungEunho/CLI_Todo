@@ -1,7 +1,7 @@
 Simple TodoList Manager
 
 How to install : 
-    pip install todo-eunho
+    pip install --upgrade todo-eunho
 
 How to Use : 
 
