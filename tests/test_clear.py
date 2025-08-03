@@ -8,11 +8,11 @@ def test_clear_command():
     project_root = Path(__file__).resolve().parent.parent
 
     subprocess.run(
-        ["python", "-m", "core_code", "todo" ,"add", "Temp_Clear"],
+        ["python", "-m", "core_code", "add", "Temp_Clear"],
         cwd=str(project_root)
     )
     result = subprocess.run(
-        ["python", "-m", "core_code", "todo" ,"clear"],
+        ["python", "-m", "core_code", "clear"],
         input="y\n",
         capture_output=True,
         text=True,

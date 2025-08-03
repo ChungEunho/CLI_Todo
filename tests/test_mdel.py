@@ -5,9 +5,9 @@ def test_mdel_command():
     project_root = Path(__file__).resolve().parent.parent
 
     # Add multiple items
-    subprocess.run(["python", "-m", "core_code", "todo", "add", "Multi1"], cwd=str(project_root))
-    subprocess.run(["python", "-m", "core_code", "todo", "add", "Multi1"], cwd=str(project_root))
-    subprocess.run(["python", "-m", "core_code", "todo", "add", "Multi1"], cwd=str(project_root))
+    subprocess.run(["python", "-m", "core_code", "add", "Multi1"], cwd=str(project_root))
+    subprocess.run(["python", "-m", "core_code", "add", "Multi1"], cwd=str(project_root))
+    subprocess.run(["python", "-m", "core_code", "add", "Multi1"], cwd=str(project_root))
 
     result = subprocess.run(
         ["python", "-m", "core_code", "todo", "mdel", "0", "1"],

@@ -1,5 +1,3 @@
-# cli.py는 command 파싱 담당
-
 import argparse
 import time
 from .utils import parse_date, parse_time, format_date, format_time, sort_key
@@ -10,42 +8,38 @@ from rich.table import Table
 from rich.progress import track
 
 def main():
-    parser = argparse.ArgumentParser(description="Todo CLI Tool")    
-    
-    top_level_subparser = parser.add_subparsers(dest="tool", required=True)
-    todo_parser = top_level_subparser.add_parser("todo", help = "ToDo List Managing Tool")
-    subparser = todo_parser.add_subparsers(dest="command", required=True)
-    
+    parser = argparse.ArgumentParser(description="Todo CLI Tool")
+    subparser = parser.add_subparsers(dest="command", required=True)
+
     # add 명령어
-    add_parser = subparser.add_parser("add", help = "Add a new todo item")
+    add_parser = subparser.add_parser("add", help="Add a new todo item")
     add_parser.add_argument("title", type=str, help="Title of the todo item")
     add_parser.add_argument("--date", type=str, help="Date in format DD_MON_YYYY")
-    add_parser.add_argument("--time", type=str, help = "Time in format HH_MM")
-    
+    add_parser.add_argument("--time", type=str, help="Time in format HH_MM")
+
     # show 명령어
-    show_parser = subparser.add_parser("show", help = "Show all todo items")
-    show_parser
-    
+    show_parser = subparser.add_parser("show", help="Show all todo items")
+
     # delete 명령어
-    delete_parser = subparser.add_parser("delete", help = "Delete todo by index")
-    delete_parser.add_argument("index", type=int, help = "Index to delete")
-    
+    delete_parser = subparser.add_parser("delete", help="Delete todo by index")
+    delete_parser.add_argument("index", type=int, help="Index to delete")
+
     # clear 명령어
-    clear_parser = subparser.add_parser("clear", help = "Clear all todo items")
+    clear_parser = subparser.add_parser("clear", help="Clear all todo items")
     clear_parser.add_argument("--force", action="store_true", help="Skip confirmation")
-    
+
     # fix 명령어
-    fix_parser = subparser.add_parser("fix", help = "Fix a todo item's date/time")
-    fix_parser.add_argument("index", type = int)
-    fix_parser.add_argument("--date", type = str)
-    fix_parser.add_argument("--time", type = str)
-    
+    fix_parser = subparser.add_parser("fix", help="Fix a todo item's date/time")
+    fix_parser.add_argument("index", type=int)
+    fix_parser.add_argument("--date", type=str)
+    fix_parser.add_argument("--time", type=str)
+
     # mdel 명령어
-    mdel_parser = subparser.add_parser("mdel", help = "Delete multiple todo items")
+    mdel_parser = subparser.add_parser("mdel", help="Delete multiple todo items")
     mdel_parser.add_argument("indexes", type=int, nargs="+", help="List of indexes to delete")
-    
-    # 각 명령어에 대한 로직 구현
+
     args = parser.parse_args()
+
     # 1. add
     if args.command == "add":
         try:
@@ -56,7 +50,7 @@ def main():
             print("Todo added successfully!")
         except Exception as e:
             print(f"Error while adding todo: {e}")
-            
+
     # 2. show
     elif args.command == "show":
         items = load_items()
@@ -91,17 +85,16 @@ def main():
             else:
                 print(f"Deleting item at index {index}...")
                 for _ in track(range(1), description="Deleting..."):
-                    time.sleep(1)  # 실제 삭제라면 딜레이 없이도 괜찮음
+                    time.sleep(1)
                 removed = items.pop(index)
                 save_items(items)
                 print(f"Deleted: {removed.title}")
         except Exception as e:
             print(f"Error while deleting: {e}")
-    
+
     # 4. clear
     elif args.command == "clear":
-        confirm = input("Are you sure you want to clear the whole ToDo List? (y/n): ").strip().lower()
-        if confirm == "y":
+        if args.force or input("Are you sure you want to clear the whole ToDo List? (y/n): ").strip().lower() == "y":
             try:
                 save_items([])
                 print("All todo items cleared.")
@@ -109,7 +102,7 @@ def main():
                 print(f"Error while clearing: {e}")
         else:
             print("Cancelled. Nothing was cleared.")
-            
+
     # 5. fix
     elif args.command == "fix":
         try:
@@ -118,9 +111,9 @@ def main():
             if index < 0 or index >= len(items):
                 print("Invalid index.")
             else:
-                item : TodoItem = items[index]
+                item: TodoItem = items[index]
                 if args.date:
-                    item.date_att= parse_date(args.date)
+                    item.date_att = parse_date(args.date)
                 if args.time:
                     item.time_att = parse_time(args.time)
                 save_items(items)
@@ -128,7 +121,6 @@ def main():
         except Exception as e:
             print(f"Error while fixing: {e}")
 
-            
     # 6. mdel
     elif args.command == "mdel":
         try:
@@ -136,7 +128,7 @@ def main():
             indexes = sorted(set(args.indexes), reverse=True)
             print("Deleting multiple items...")
             for idx in track(indexes, description="Deleting..."):
-                time.sleep(0.2)  # 시각적 효과를 위한 딜레이 (생략 가능)
+                time.sleep(0.2)
                 if 0 <= idx < len(items):
                     removed = items.pop(idx)
                     print(f"Deleted: {removed.title}")

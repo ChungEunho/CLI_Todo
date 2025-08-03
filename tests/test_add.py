@@ -7,7 +7,7 @@ def test_add_command():
 
     # subprocess로 CLI 명령어 실행
     result = subprocess.run(
-        ["python", "-m", "core_code", "todo" ,"add", "Test_CLI_Item", "--date", "01_AUG_2025", "--time", "12_30"],
+        ["python", "-m", "core_code","add", "Test_CLI_Item", "--date", "01_AUG_2025", "--time", "12_30"],
         capture_output=True,
         text=True,
         cwd=str(project_root)
